@@ -1,0 +1,21 @@
+{
+    "extends": "./tsconfig.paths.json",
+    "compilerOptions": {
+        "allowSyntheticDefaultImports": true,
+        "lib": [
+            "ES2022"
+        ],
+        "module": "ES2022",
+        "moduleResolution": "Node",
+        "target": "ES2022",
+        "allowJs": true,
+        "preserveConstEnums": true,
+        "strictNullChecks": true,
+        "outDir": ".build",
+        "declaration": true,
+        "rootDir": "./",
+        "types": [
+            "vitest/globals"
+        ],
+    }
+}

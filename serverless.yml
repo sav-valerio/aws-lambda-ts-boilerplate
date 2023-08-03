@@ -1,0 +1,41 @@
+service: lambda-boilerplate
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  region: eu-west-1
+  stage: ${opt:stage, 'test'}
+
+  runtime: nodejs18.x
+  architecture: x86_64
+  logRetentionInDays: 14
+
+  iam:
+    # Managed by infra-pulumi - create accordingly
+    role: arn:aws:iam::${aws:accountId}:role/weschool-lambda-boilerplate-lambdarole-${self:provider.stage}
+
+  environment:
+    EXAMPLE_ENV: ${ssm:/uploads/${self:provider.stage}/example/param}
+
+functions:
+  example:
+    handler: src/example.handler
+    memorySize: 1536
+    timeout: 10
+    lambdaInsights: true
+
+plugins:
+  - serverless-webpack
+  - serverless-plugin-lambda-insights
+
+custom:
+  webpack:
+    webpackConfig: ./webpack.config.cjs
+
+    # Include all "excluded" modules from webpack
+    # except the following as they're unused or already available on Lambda
+    includeModules:
+      forceExclude:
+        - aws-sdk
+        - aws-crt
+        - "@aws-sdk/signature-v4-crt"
