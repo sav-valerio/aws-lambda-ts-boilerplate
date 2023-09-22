@@ -7,8 +7,12 @@ provider:
   stage: ${opt:stage, 'test'}
 
   runtime: nodejs18.x
-  architecture: x86_64
+  architecture: arm64
   logRetentionInDays: 14
+  
+  tracing:
+    apiGateway: true
+    lambda: true
 
   iam:
     # Managed by infra-pulumi - create accordingly
@@ -16,6 +20,22 @@ provider:
 
   environment:
     EXAMPLE_ENV: ${ssm:/uploads/${self:provider.stage}/example/param}
+
+params:
+  # Default testing subdomains are on Route53
+  default:
+    domainName: lambda-boilerplate-${sls:stage}.weschoolapp.com
+    certificateName: '*.weschoolapp.com'
+    createRoute53Record: true
+  # Stage/prod records are on Cloudflare
+  stage:
+    domainName: lambda-boilerplate-${sls:stage}.weschool.com
+    certificateName: '*.weschool.com'
+    createRoute53Record: false
+  prod:
+    domainName: lambda-boilerplate-${sls:stage}.weschool.com
+    certificateName: '*.weschool.com'
+    createRoute53Record: false
 
 functions:
   example:
@@ -25,17 +45,19 @@ functions:
     lambdaInsights: true
 
 plugins:
-  - serverless-webpack
+  - serverless-esbuild
   - serverless-plugin-lambda-insights
+  - serverless-domain-manager
+  - serverless-offline
 
 custom:
-  webpack:
-    webpackConfig: ./webpack.config.cjs
-
-    # Include all "excluded" modules from webpack
-    # except the following as they're unused or already available on Lambda
-    includeModules:
-      forceExclude:
-        - aws-sdk
-        - aws-crt
-        - "@aws-sdk/signature-v4-crt"
+  esbuild:
+    config: esbuild.config.cjs
+    
+  customDomain:
+    domainName: ${param:domainName}
+    certificateName: ${param:certificateName}
+    createRoute53Record: ${param:createRoute53Record}
+    endpointType: REGIONAL
+    securityPolicy: tls_1_2
+    apiType: websocket

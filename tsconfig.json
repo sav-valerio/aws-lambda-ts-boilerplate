@@ -1,21 +1,21 @@
 {
     "extends": "./tsconfig.paths.json",
     "compilerOptions": {
-        "allowSyntheticDefaultImports": true,
-        "lib": [
-            "ES2022"
-        ],
-        "module": "ES2022",
-        "moduleResolution": "Node",
+        "rootDir": "./",
         "target": "ES2022",
-        "allowJs": true,
+        "module": "ES2022",
+        "moduleResolution": "Bundler",
+        "declaration": true,
+        "strict": true,
+        "skipLibCheck": false,
+        "esModuleInterop": true,
         "preserveConstEnums": true,
         "strictNullChecks": true,
-        "outDir": ".build",
-        "declaration": true,
-        "rootDir": "./",
-        "types": [
-            "vitest/globals"
-        ],
-    }
+    },
+    "include": [
+        "src/**/*.ts"
+    ],
+    "exclude": [
+        "./node_modules"
+    ]
 }

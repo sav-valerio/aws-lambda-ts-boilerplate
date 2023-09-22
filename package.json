@@ -6,7 +6,9 @@
   "type": "module",
   "scripts": {
     "test": "vitest run --single-thread --coverage",
-    "deploy": "serverless deploy"
+    "offline": "serverless offline",
+    "ts-check": "tsc --noEmit",
+    "deploy": "npm run ts-check && serverless deploy"
   },
   "engines": {
     "node": ">=18"
@@ -22,26 +24,30 @@
   },
   "homepage": "https://github.com/WeSchoolEng/lambda-boilerplate#readme",
   "dependencies": {
+    "@aws-lambda-powertools/commons": "^1.13.1",
+    "@aws-lambda-powertools/logger": "^1.13.1",
+    "@aws-lambda-powertools/metrics": "^1.13.1",
+    "@aws-lambda-powertools/tracer": "^1.13.1"
   },
   "devDependencies": {
-    "@types/node": "^20.4.5",
-    "@vitest/coverage-v8": "^0.33.0",
-    "aws-crt": "^1.15.20",
-    "eslint": "^8.41.0",
+    "@types/aws-lambda": "^8.10.121",
+    "@types/node": "^20.6.3",
+    "@vitest/coverage-v8": "^0.34.5",
+    "eslint": "^8.49.0",
     "eslint-config-airbnb": "^19.0.4",
-    "eslint-config-airbnb-typescript": "^17.0.0",
-    "eslint-config-standard": "^17.0.0",
-    "eslint-import-resolver-typescript": "^3.5.5",
-    "eslint-plugin-import": "^2.27.5",
-    "eslint-plugin-n": "^15.7.0",
+    "eslint-config-airbnb-typescript": "^17.1.0",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-import-resolver-typescript": "^3.6.0",
+    "eslint-plugin-import": "^2.28.1",
+    "eslint-plugin-n": "^16.1.0",
     "eslint-plugin-promise": "^6.1.1",
-    "fork-ts-checker-webpack-plugin": "^8.0.0",
+    "esbuild": "^0.19.3",
+    "serverless": "^3.35.2",
+    "serverless-domain-manager": "^7.1.2",
+    "serverless-esbuild": "^1.48.3",
+    "serverless-offline": "^12.0.4",
     "serverless-plugin-lambda-insights": "^2.0.0",
-    "serverless-webpack": "^5.11.0",
-    "ts-loader": "^9.4.4",
-    "tsconfig-paths-webpack-plugin": "^4.0.1",
-    "typescript": "^5.1.6",
-    "vitest": "^0.33.0",
-    "webpack": "^5.88.1"
+    "typescript": "^5.2.2",
+    "vitest": "^0.34.5"
   }
 }
