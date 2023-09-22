@@ -60,4 +60,5 @@ custom:
     createRoute53Record: ${param:createRoute53Record}
     endpointType: REGIONAL
     securityPolicy: tls_1_2
-    apiType: websocket
+    apiType: rest
+    autoDomain: true

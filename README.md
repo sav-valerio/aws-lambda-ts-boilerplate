@@ -38,9 +38,6 @@ vim serverless.yml
 Please run the following command for deploying the latest version of the project from your local:
 
 ```zsh
-# First deploy only for setting up the custom domain
-sls create_domain
-
 # Test environment (used on all non-prod envs)
 npm run deploy
 
