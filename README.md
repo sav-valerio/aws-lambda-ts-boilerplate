@@ -4,10 +4,10 @@ An opinionated boilerplate for creating quickly an AWS Lambda-powered project.
 
 ## Perks
 
-- Node.js >= 18 support
-- TypeScript + ECMAScript modules support and enforcing
-- Webpack bundling for reducing the ZIP size
-- Testing powered Vitest + basic GitHub Actions workflows
+- [Node.js](https://nodejs.org/en) >= 18 support
+- [TypeScript](https://www.typescriptlang.org/) + [ECMAScript Modules](https://www.typescriptlang.org/docs/handbook/esm-node.html) support and enforcing
+- [esbuild](https://esbuild.github.io/) bundler for reducing the final size and improving performance
+- Testing powered [Vitest](https://vitest.dev/) + basic [GitHub Actions](https://docs.github.com/en/actions) workflows
 
 ## Requirements
 
