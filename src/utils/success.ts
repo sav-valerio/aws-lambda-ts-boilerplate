@@ -1,5 +1,3 @@
-export default async () => {
-    return {
-        statusCode: 200,
-    };
-}
+export default async () => ({
+  statusCode: 200,
+});

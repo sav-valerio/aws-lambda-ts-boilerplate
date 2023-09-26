@@ -1,5 +1,5 @@
-import success from "@utils/success";
+import success from '@utils/success';
 
-export async function handler(event) {
+export default async function handler() {
   return success();
 }
