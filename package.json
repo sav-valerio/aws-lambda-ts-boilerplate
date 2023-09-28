@@ -8,7 +8,7 @@
     "ts-check": "tsc --noEmit",
     "lint": "eslint --fix src/** && prettier --config .prettierrc 'src/**/*.ts' --write && npm run ts-check",
     "test": "vitest run --single-thread --coverage",
-    "offline": "npm run ts-check && serverless offline",
+    "offline": "npm run lint && serverless offline",
     "deploy": "npm run ts-check && serverless deploy"
   },
   "engines": {

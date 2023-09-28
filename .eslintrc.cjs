@@ -1,12 +1,15 @@
 module.exports = {
   env: {
-    node: true
+    node: true,
   },
   extends: [
     'airbnb',
-    'airbnb-typescript/base'
+    'airbnb-typescript/base',
   ],
   parserOptions: {
-    project: './tsconfig.json'
-  }
+    project: './tsconfig.json',
+  },
+  rules: {
+    'class-methods-use-this': 'off',
+  },
 };

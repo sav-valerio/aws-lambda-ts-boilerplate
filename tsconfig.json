@@ -15,7 +15,9 @@
         "experimentalDecorators": true,
     },
     "include": [
-        "src/**/*.ts"
+        "src/**/*.ts",
+        ".eslintrc.cjs",
+        "esbuild.config.cjs"
     ],
     "exclude": [
         "./node_modules"
