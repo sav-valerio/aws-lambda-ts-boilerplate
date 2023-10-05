@@ -5,6 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "postinstall": "npx husky install",
     "ts-check": "tsc --noEmit",
     "lint": "eslint --fix src/** && prettier --config .prettierrc 'src/**/*.ts' --write && npm run ts-check",
     "test": "vitest run --single-thread --coverage",
@@ -31,6 +32,8 @@
     "@aws-lambda-powertools/tracer": "^1.13.1"
   },
   "devDependencies": {
+    "@commitlint/cli": "^17.7.2",
+    "@commitlint/config-conventional": "^17.7.0",
     "@types/aws-lambda": "^8.10.122",
     "@types/node": "^20.6.3",
     "@vitest/coverage-v8": "^0.34.5",
@@ -45,6 +48,7 @@
     "eslint-plugin-import": "^2.28.1",
     "eslint-plugin-n": "^16.1.0",
     "eslint-plugin-promise": "^6.1.1",
+    "husky": "^8.0.3",
     "prettier-eslint": "^15.0.1",
     "serverless": "^3.35.2",
     "serverless-domain-manager": "^7.1.2",
