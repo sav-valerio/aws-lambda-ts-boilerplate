@@ -3,7 +3,7 @@ module.exports = {
     node: true,
   },
   extends: [
-    'airbnb',
+    'airbnb-base',
     'airbnb-typescript/base',
     'prettier',
   ],
