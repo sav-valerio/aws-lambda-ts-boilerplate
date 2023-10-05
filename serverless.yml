@@ -19,7 +19,10 @@ provider:
     role: arn:aws:iam::${aws:accountId}:role/weschool-lambda-boilerplate-lambdarole-${self:provider.stage}
 
   # Environment variables exposed to Lambdas
-  # environment:
+  environment:
+    LOG_LEVEL: debug
+
+    # Example retrieval from SSM
     # EXAMPLE_ENV: ${ssm:/uploads/${self:provider.stage}/example/param}
 
 params:
@@ -40,7 +43,7 @@ params:
 
 functions:
   example:
-    handler: src/example.handler
+    handler: src/index.handler
     events:
       - httpApi: 'GET /test'
     memorySize: 1024
