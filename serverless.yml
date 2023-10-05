@@ -18,8 +18,9 @@ provider:
     # Managed by infra-pulumi - create accordingly
     role: arn:aws:iam::${aws:accountId}:role/weschool-lambda-boilerplate-lambdarole-${self:provider.stage}
 
-  environment:
-    EXAMPLE_ENV: ${ssm:/uploads/${self:provider.stage}/example/param}
+  # Environment variables exposed to Lambdas
+  # environment:
+    # EXAMPLE_ENV: ${ssm:/uploads/${self:provider.stage}/example/param}
 
 params:
   # Default testing subdomains are on Route53
