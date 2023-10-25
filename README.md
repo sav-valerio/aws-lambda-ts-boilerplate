@@ -44,3 +44,17 @@ npm run deploy
 # Prod environment
 npm run deploy -- --stage prod
 ```
+
+### Debugging
+
+You can use the [`logs` command available in Serverless Framework](https://www.serverless.com/framework/docs/providers/aws/cli-reference/logs) for retrieving the logs.
+
+```zsh
+cd lambda-boilerplate
+
+# Tail real-time logs
+sls logs --stage ENV_NAME --function execute --tail
+
+# Get logs starting from 1 hour ago
+sls logs --stage ENV_NAME --function execute --startTime 1hr
+```
