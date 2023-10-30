@@ -1,0 +1,15 @@
+name: Validate commit
+
+on: [push]
+
+jobs:
+  commitlint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      # Workaround for handling unrelated TS errors
+      # https://github.com/wagoid/commitlint-github-action/issues/560#issuecomment-1277659864
+      - run: rm tsconfig.json
+
+      - uses: wagoid/commitlint-github-action@v5
