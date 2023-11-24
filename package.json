@@ -2,15 +2,19 @@
   "name": "lambda-boilerplate",
   "version": "1.0.0",
   "description": "A boilerplate for AWS Lambda functions written in TypeScript",
-  "main": "index.js",
-  "type": "module",
+  "bin": {
+    "lambda-boilerplate-api": "bin/lambda-boilerplate-api.js"
+  },
   "scripts": {
-    "postinstall": "npx husky install",
+    "prepare": "npx husky install",
     "ts-check": "tsc --noEmit",
     "lint": "eslint --fix src/** && prettier --config .prettierrc 'src/**/*.ts' --write && npm run ts-check",
-    "test": "vitest run --single-thread --coverage",
-    "offline": "npm run lint && serverless offline",
-    "deploy": "npm run ts-check && serverless deploy"
+    "migrate-local": "node src/database/migrations/migrate.mjs",
+    "test": "vitest run --single-thread",
+    "coverage": "vitest run --single-thread --coverage",
+    "cdk": "cdk",
+    "deploy": "npm run ts-check && cdk deploy --context",
+    "watch": "npm run ts-check && cdk watch --no-rollback --context"
   },
   "engines": {
     "node": ">=18"
@@ -26,20 +30,27 @@
   },
   "homepage": "https://github.com/WeSchoolEng/lambda-boilerplate#readme",
   "dependencies": {
-    "@aws-lambda-powertools/commons": "^1.13.1",
-    "@aws-lambda-powertools/logger": "^1.13.1",
-    "@aws-lambda-powertools/metrics": "^1.13.1",
-    "@aws-lambda-powertools/tracer": "^1.13.1"
+    "@aws-lambda-powertools/commons": "^1.12.1",
+    "@aws-lambda-powertools/logger": "^1.12.1",
+    "@aws-lambda-powertools/metrics": "^1.12.1",
+    "@aws-lambda-powertools/parameters": "^1.12.1",
+    "@aws-lambda-powertools/tracer": "^1.12.1"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.7.2",
     "@commitlint/config-conventional": "^17.7.0",
+    "@mrgrain/cdk-esbuild": "^5.0.3",
     "@types/aws-lambda": "^8.10.122",
-    "@types/jest": "^29.5.5",
-    "@types/node": "^20.6.3",
+    "@types/node": "^20.8.10",
+    "@typescript-eslint/eslint-plugin": "^6.7.3",
+    "@typescript-eslint/parser": "^6.7.4",
     "@vitest/coverage-v8": "^0.34.5",
+    "aws-cdk": "2.103.1",
+    "aws-cdk-lib": "2.103.1",
+    "aws-event-mocks": "^0.0.0",
     "aws-sdk-client-mock": "^3.0.0",
-    "esbuild": "^0.19.4",
+    "constructs": "^10.0.0",
+    "esbuild": "^0.19.5",
     "eslint": "^8.50.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-airbnb-typescript": "^17.1.0",
@@ -47,15 +58,13 @@
     "eslint-config-standard": "^17.1.0",
     "eslint-import-resolver-typescript": "^3.6.1",
     "eslint-plugin-import": "^2.28.1",
+    "eslint-plugin-jsx-a11y": "^6.7.1",
     "eslint-plugin-n": "^16.1.0",
     "eslint-plugin-promise": "^6.1.1",
     "husky": "^8.0.3",
+    "prettier": "^3.0.3",
     "prettier-eslint": "^15.0.1",
-    "serverless": "^3.35.2",
-    "serverless-domain-manager": "^7.1.2",
-    "serverless-esbuild": "^1.48.4",
-    "serverless-offline": "^12.0.4",
-    "serverless-plugin-lambda-insights": "^2.0.0",
+    "ts-node": "^10.9.1",
     "typescript": "^5.0.4",
     "vitest": "^0.34.6"
   }

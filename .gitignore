@@ -157,3 +157,10 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+.idea
+certs
+
+# CDK asset staging directory
+.cdk.staging
+cdk.out

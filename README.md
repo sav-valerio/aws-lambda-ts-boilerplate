@@ -18,18 +18,29 @@ An opinionated boilerplate for creating quickly an AWS Lambda-powered project.
 
 ## Usage
 
-```zsh
-git clone git@github.com:WeSchoolEng/lambda-boilerplate
+1. Clone the boilerplate:
 
-cp -rf lambda-boilerplate <new-project-name>
+    ```zsh
+    git clone git@github.com:WeSchoolEng/lambda-boilerplate
 
-# Replace all references to "lambda-boilerplate" with <new-project-name>
-# and update accordingly the config files following your needs
-vim package.json
-vim serverless.yml
+    cp -rf lambda-boilerplate <new-project-name>
+    ```
 
-# Start adding your functions to the src/ dir along with your tests
-```
+2. Find and replace all refs to `LambdaBoilerplate` and `lambda-boilerplate` with `<new-project-name>`.
+
+3. Rename the following files:
+
+    ```zsh
+    mv bin/lambda-boilerplate-api.ts bin/<new-project-name>-api.ts
+    mv lib/lambda-boilerplate-stack.ts bin/<new-project-name>-stack.ts
+    ```
+
+4. Add the code of Lambda functions to the `src/` directory.
+
+5. Update the main stack available under `lib/*-stack.ts` referring the [AWS CDK](https://docs.aws.amazon.com/cdk/v2/guide/home.html) docs accordingly:
+
+    - API Gateway: https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_apigateway-readme.html
+    - Lambda: https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_lambda-readme.html
 
 ## Deployment
 
@@ -38,23 +49,16 @@ vim serverless.yml
 Please run the following command for deploying the latest version of the project from your local:
 
 ```zsh
-# Test environment (used on all non-prod envs)
-npm run deploy
+# Custom dev env
+npm run deploy -- env=ENV_NAME
 
 # Prod environment
-npm run deploy -- --stage prod
+npm run deploy -- env=prod
 ```
 
 ### Debugging
 
-You can use the [`logs` command available in Serverless Framework](https://www.serverless.com/framework/docs/providers/aws/cli-reference/logs) for retrieving the logs.
-
 ```zsh
-cd lambda-boilerplate
-
-# Tail real-time logs
-sls logs --stage ENV_NAME --function execute --tail
-
-# Get logs starting from 1 hour ago
-sls logs --stage ENV_NAME --function execute --startTime 1hr
+# Watch local code changes and show real-time logs
+npm run watch -- env=ENV_NAME
 ```
