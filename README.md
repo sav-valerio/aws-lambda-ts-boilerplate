@@ -12,9 +12,8 @@ An opinionated boilerplate for creating quickly an AWS Lambda-powered project.
 ## Requirements
 
 - Node.js (>= 18)
-- [Serverless Framework](https://github.com/serverless/serverless)
+- AWS CDK (npm install -g aws-cdk)
 - AWS credentials configured on your local machine
-- Base infra resources from [infra-pulumi](https://github.com/WeSchoolEng/infra-pulumi/tree/main/res/platform/uploads) already deployed
 
 ## Usage
 
