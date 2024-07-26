@@ -2,8 +2,8 @@ import random from '@utils/random';
 
 import { Tracer } from '@aws-lambda-powertools/tracer';
 import { Logger } from '@aws-lambda-powertools/logger';
-import { LambdaInterface } from '@aws-lambda-powertools/commons';
-import { LogLevel } from '@aws-lambda-powertools/logger/lib/types';
+import { LambdaInterface } from '@aws-lambda-powertools/commons/types';
+import { LogLevel } from '@aws-lambda-powertools/logger/types';
 
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 
