@@ -14,7 +14,8 @@
     "coverage": "vitest run --single-thread --coverage",
     "cdk": "cdk",
     "deploy": "npm run ts-check && cdk deploy --context",
-    "watch": "npm run ts-check && cdk watch --no-rollback --context"
+    "watch": "npm run ts-check && cdk watch --no-rollback --context",
+    "destroy": "cdk destroy --context"
   },
   "engines": {
     "node": ">=18"
