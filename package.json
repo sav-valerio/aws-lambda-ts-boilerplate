@@ -10,8 +10,8 @@
     "ts-check": "tsc --noEmit",
     "lint": "eslint --fix src/** && prettier --config .prettierrc 'src/**/*.ts' --write && npm run ts-check",
     "migrate-local": "node src/database/migrations/migrate.mjs",
-    "test": "vitest run --single-thread",
-    "coverage": "vitest run --single-thread --coverage",
+    "test": "vitest run",
+    "coverage": "vitest run --coverage",
     "cdk": "cdk",
     "deploy": "npm run ts-check && cdk deploy --context",
     "watch": "npm run ts-check && cdk watch --no-rollback --context",
@@ -45,7 +45,7 @@
     "@types/node": "^20.14.12",
     "@typescript-eslint/eslint-plugin": "^6.7.3",
     "@typescript-eslint/parser": "^6.7.4",
-    "@vitest/coverage-v8": "^0.34.5",
+    "@vitest/coverage-v8": "^2.0.5",
     "aws-cdk": "2.150.0",
     "aws-cdk-lib": "2.150.0",
     "aws-event-mocks": "^0.0.0",
@@ -67,6 +67,6 @@
     "prettier-eslint": "^15.0.1",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.4",
-    "vitest": "^0.34.6"
+    "vitest": "^2.0.5"
   }
 }
