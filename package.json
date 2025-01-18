@@ -22,14 +22,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/WeSchoolEng/lambda-boilerplate.git"
+    "url": "git+https://github.com/sav-valerio/lambda-boilerplate.git"
   },
-  "author": "Saverio Valerio <saverio.valerio@weschool.com>",
-  "license": "UNLICENSED",
+  "author": "Saverio Valerio <me@saval.dev>",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/WeSchoolEng/lambda-boilerplate/issues"
+    "url": "https://github.com/sav-valerio/lambda-boilerplate/issues"
   },
-  "homepage": "https://github.com/WeSchoolEng/lambda-boilerplate#readme",
+  "homepage": "https://github.com/sav-valerio/lambda-boilerplate#readme",
   "dependencies": {
     "@aws-lambda-powertools/commons": "^2.6.0",
     "@aws-lambda-powertools/logger": "^2.6.0",

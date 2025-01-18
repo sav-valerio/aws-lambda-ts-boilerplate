@@ -48,26 +48,22 @@ export class LambdaBoilerplateApiStack extends cdk.Stack {
         });
 
         // Set custom domain for public API 
-        if (env !== 'prod') {
-            const subdomain = `lambda-boilerplate-${env}`;
+        const subdomain = `lambda-boilerplate-${env}`;
 
-            api.addDomainName('APIGateway-DomainName', {
-                domainName: `${subdomain}.weschoolapp.com`,
-                certificate: cert.Certificate.fromCertificateArn(this, 'Certificate-WeSchoolAppCom',
-                    ssm.StringParameter.valueForStringParameter(this, '/acm/weschoolapp.com/certificate/arn')),
-            });
+        api.addDomainName('APIGateway-DomainName', {
+            domainName: `${subdomain}.saval.dev`,
+            certificate: cert.Certificate.fromCertificateArn(this, 'Certificate-SavalDev',
+                ssm.StringParameter.valueForStringParameter(this, '/acm/saval.dev/certificate/arn')),
+        });
 
-            new route53.ARecord(this, 'Route53-Alias', {
-                zone: route53.HostedZone.fromHostedZoneAttributes(this, 'Route53-HostedZone-weschoolapp', {
-                    zoneName: 'weschoolapp.com',
-                    hostedZoneId: ssm.StringParameter.valueForStringParameter(this, '/route53/weschoolapp/zone/id'),
-                }),
-                recordName: subdomain,
-                target: route53.RecordTarget.fromAlias(new targets.ApiGateway(api))
-            });
-        }
-
-        // TODO: Handle custom domain for prod
+        new route53.ARecord(this, 'Route53-Alias', {
+            zone: route53.HostedZone.fromHostedZoneAttributes(this, 'Route53-HostedZone-SavalDev', {
+                zoneName: 'saval.dev',
+                hostedZoneId: ssm.StringParameter.valueForStringParameter(this, '/route53/saval.dev/zone/id'),
+            }),
+            recordName: subdomain,
+            target: route53.RecordTarget.fromAlias(new targets.ApiGateway(api))
+        });
 
         new cdk.CfnOutput(this, 'APIGateway-URL', {
             value: api.domainName?.domainName || api.url
