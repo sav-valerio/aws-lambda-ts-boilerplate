@@ -20,9 +20,9 @@ An opinionated boilerplate for creating quickly an AWS Lambda-powered project.
 1. Clone the boilerplate:
 
     ```zsh
-    git clone git@github.com:sav-valerio/lambda-boilerplate
+    git clone git@github.com:sav-valerio/aws-ts-lambda-boilerplate
 
-    cp -rf lambda-boilerplate <new-project-name>
+    cp -rf aws-ts-lambda-boilerplate <new-project-name>
     ```
 
 2. Find and replace all refs to `LambdaBoilerplate` and `lambda-boilerplate` with `<new-project-name>`.
@@ -41,9 +41,9 @@ An opinionated boilerplate for creating quickly an AWS Lambda-powered project.
     - API Gateway: https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_apigateway-readme.html
     - Lambda: https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_lambda-readme.html
 
-6. Setting up an optional custom domain is already supported.
-    This assumes that you already have an ACM certificate and a Route53 zone provisioned by another stack/IaC tool along with its ARNs exported onto SSM for easy retrieval and import.
-    Feel free to replace my `saval.dev` domain with your own.
+6. Setting up an optional custom domain is already supported.  
+    This assumes that you already have an ACM certificate and a Route53 zone provisioned by another stack/IaC tool along with its ARNs exported onto SSM for easy retrieval and import.  
+    Feel free to replace my `saval.dev` domain with your own.  
 
 ## Deployment
 
