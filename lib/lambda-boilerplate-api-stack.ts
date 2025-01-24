@@ -10,7 +10,9 @@ import * as ssm from 'aws-cdk-lib/aws-ssm';
 import * as route53 from 'aws-cdk-lib/aws-route53';
 import * as targets from 'aws-cdk-lib/aws-route53-targets';
 import * as cert from 'aws-cdk-lib/aws-certificatemanager';
-import * as apigateway from 'aws-cdk-lib/aws-apigateway';
+
+import * as apigwv2 from 'aws-cdk-lib/aws-apigatewayv2';
+import { HttpLambdaIntegration } from 'aws-cdk-lib/aws-apigatewayv2-integrations';
 
 import { TypeScriptCode, TypeScriptCodeProps } from '@mrgrain/cdk-esbuild';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
@@ -20,7 +22,10 @@ export class LambdaBoilerplateApiStack extends cdk.Stack {
         super(scope, id, props);
 
         const env = scope.node.tryGetContext('env');
-        const sharedResEnv = env === 'prod' ? 'prod' : 'test';
+
+        // --- Custom domain ---
+        const USE_ROUTE_53 = false;
+        const domainName = `api-${env}.saval.dev`;
 
         // --- IAM ---
         const role = new iam.Role(this, 'LambdaFunctionExecuteServiceRole', {
@@ -31,43 +36,48 @@ export class LambdaBoilerplateApiStack extends cdk.Stack {
         });
 
         // --- API Gateway ---
-        const api = new apigateway.RestApi(this, 'APIGateway', {
-            restApiName: `lambda-boilerplate-api-${env}`,
-            description: 'Lambda Boilerplate API',
-            deployOptions: {
-                stageName: env,
-                metricsEnabled: true,
-                dataTraceEnabled: env !== 'prod',
-                tracingEnabled: true
-            },
-            defaultCorsPreflightOptions: {
-                allowMethods: ['OPTIONS', 'GET', 'POST'],
-                allowCredentials: true,
-                allowOrigins: ['https://*'],
-            },
-        });
-
-        // Set custom domain for public API 
-        const subdomain = `lambda-boilerplate-${env}`;
-
-        api.addDomainName('APIGateway-DomainName', {
-            domainName: `${subdomain}.saval.dev`,
+        const apigwDomainName = new apigwv2.DomainName(this, 'APIGateway-DomainName', {
+            domainName,
+            // Make sure that you have already created a certificate in ACM
             certificate: cert.Certificate.fromCertificateArn(this, 'Certificate-SavalDev',
                 ssm.StringParameter.valueForStringParameter(this, '/acm/saval.dev/certificate/arn')),
         });
 
-        new route53.ARecord(this, 'Route53-Alias', {
-            zone: route53.HostedZone.fromHostedZoneAttributes(this, 'Route53-HostedZone-SavalDev', {
-                zoneName: 'saval.dev',
-                hostedZoneId: ssm.StringParameter.valueForStringParameter(this, '/route53/saval.dev/zone/id'),
-            }),
-            recordName: subdomain,
-            target: route53.RecordTarget.fromAlias(new targets.ApiGateway(api))
+        const api = new apigwv2.HttpApi(this, 'APIGateway', {
+            apiName: `lambda-boilerplate-api-${env}`,
+            description: 'Lambda Boilerplate API',
+            corsPreflight: {
+                allowHeaders: ['Authorization'],
+                allowMethods: [apigwv2.CorsHttpMethod.GET],
+                allowOrigins: ['*'],
+                maxAge: cdk.Duration.days(10),
+            },
+            defaultDomainMapping: {
+                domainName: apigwDomainName,
+            }
         });
 
-        new cdk.CfnOutput(this, 'APIGateway-URL', {
-            value: api.domainName?.domainName || api.url
+        new cdk.CfnOutput(this, 'API-RecordName', {
+            value: domainName
         });
+
+        // --- Route 53 (optional) ---
+        if (USE_ROUTE_53) {
+            new route53.ARecord(this, 'Route53-Alias', {
+                zone: route53.HostedZone.fromHostedZoneAttributes(this, 'Route53-HostedZone-SavalDev', {
+                    zoneName: domainName.split('.')[1],
+                    hostedZoneId: ssm.StringParameter.valueForStringParameter(this, '/route53/saval.dev/zone/id'),
+                }),
+                recordName: domainName,
+                target: route53.RecordTarget.fromAlias(new targets.ApiGatewayv2DomainProperties(
+                    apigwDomainName.regionalDomainName, apigwDomainName.regionalHostedZoneId))
+            });
+        } else {
+            // Expose the API target if Route 53 is not in use (thus requiring the manual creation of a record in the DNS zone)
+            new cdk.CfnOutput(this, 'API-RecordTarget', {
+                value: apigwDomainName.regionalDomainName,
+            });
+        }
 
         // --- Lambda ---
         const esbuildConfig: TypeScriptCodeProps = {
@@ -93,7 +103,7 @@ export class LambdaBoilerplateApiStack extends cdk.Stack {
         };
 
         const lambdaSharedConfig = {
-            runtime: lambda.Runtime.NODEJS_18_X,
+            runtime: lambda.Runtime.NODEJS_20_X,
             architecture: lambda.Architecture.ARM_64,
             timeout: cdk.Duration.seconds(30),
             memorySize: 512,
@@ -103,8 +113,7 @@ export class LambdaBoilerplateApiStack extends cdk.Stack {
             environment: {
                 NODE_ENV: env,
                 LOG_LEVEL: env === 'prod' ? 'warn' : 'debug',
-
-                API_URL: `https://${api.domainName?.domainName || api.url}`,
+                API_URL: domainName
             },
         };
 
@@ -116,8 +125,10 @@ export class LambdaBoilerplateApiStack extends cdk.Stack {
         });
 
         // --- API Gateway routes ---
-        const badges = api.root
-            .addResource('index');
-        badges.addMethod('GET', new apigateway.LambdaIntegration(indexFunction));
+        api.addRoutes({
+            path: '/index',
+            methods: [apigwv2.HttpMethod.GET],
+            integration: new HttpLambdaIntegration('FunctionIntegration', indexFunction),
+        });
     }
 }
