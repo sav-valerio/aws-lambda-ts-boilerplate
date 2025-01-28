@@ -12,10 +12,10 @@ import * as targets from 'aws-cdk-lib/aws-route53-targets';
 import * as cert from 'aws-cdk-lib/aws-certificatemanager';
 
 import * as apigwv2 from 'aws-cdk-lib/aws-apigatewayv2';
-import { HttpLambdaIntegration } from 'aws-cdk-lib/aws-apigatewayv2-integrations';
 
-import { TypeScriptCode, TypeScriptCodeProps } from '@mrgrain/cdk-esbuild';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
+import { HttpLambdaIntegration } from 'aws-cdk-lib/aws-apigatewayv2-integrations';
+import { NodejsFunction, NodejsFunctionProps, LogLevel, OutputFormat } from "aws-cdk-lib/aws-lambda-nodejs";
 
 export class LambdaBoilerplateApiStack extends cdk.Stack {
     constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -80,29 +80,7 @@ export class LambdaBoilerplateApiStack extends cdk.Stack {
         }
 
         // --- Lambda ---
-        const esbuildConfig: TypeScriptCodeProps = {
-            buildOptions: {
-                bundle: true,
-                minify: true,
-                sourcemap: false,
-                logLevel: 'info',
-                legalComments: 'external',
-                format: 'esm',
-                // Requires for allowing ESM to run on Lambda runtime
-                // https://aws.amazon.com/blogs/compute/using-node-js-es-modules-and-top-level-await-in-aws-lambda/
-                outExtension: { '.js': '.mjs' },
-                // Enable tree shaking for both ECMAScript and CommonJS modules
-                // https://esbuild.github.io/api/#main-fields - https://github.com/aws/aws-sdk-js-v3/issues/3542
-                mainFields: ['module', 'main'],
-                // Allow the use of "require" based deps while shipping ESM
-                // https://github.com/evanw/esbuild/issues/1921#issuecomment-1152887672
-                banner: {
-                    js: "import { createRequire } from 'module';const require = createRequire(import.meta.url);",
-                },
-            },
-        };
-
-        const lambdaSharedConfig = {
+        const lambdaSharedConfig: NodejsFunctionProps = {
             runtime: lambda.Runtime.NODEJS_20_X,
             architecture: lambda.Architecture.ARM_64,
             timeout: cdk.Duration.seconds(30),
@@ -115,13 +93,25 @@ export class LambdaBoilerplateApiStack extends cdk.Stack {
                 LOG_LEVEL: env === 'prod' ? 'warn' : 'debug',
                 API_URL: domainName
             },
+            // esbuild options
+            bundling: {
+                minify: true,
+                logLevel: LogLevel.ERROR,
+                format: OutputFormat.ESM,
+                // Enable tree shaking for both ECMAScript and CommonJS modules
+                // https://esbuild.github.io/api/#main-fields - https://github.com/aws/aws-sdk-js-v3/issues/3542
+                mainFields: ['module', 'main'],
+                // Allow the use of "require" based deps while shipping ESM
+                // https://github.com/evanw/esbuild/issues/1921#issuecomment-1152887672
+                banner: "import { createRequire } from 'module';const require = createRequire(import.meta.url);",
+            }
         };
 
-        const indexFunction = new lambda.Function(this, 'LambdaFunctionIndex', {
+        const indexFunction = new NodejsFunction(this, 'LambdaFunctionIndex', {
             functionName: `${this.stackName}-index`,
+            entry: 'src/index.ts',
             handler: 'index.handler',
-            code: new TypeScriptCode('src/index.ts', esbuildConfig),
-            ...lambdaSharedConfig,
+            ...lambdaSharedConfig
         });
 
         // --- API Gateway routes ---
